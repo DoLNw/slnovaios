@@ -7,15 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4926B714279C338B00A5D5DF /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4926B713279C338B00A5D5DF /* Helper.swift */; };
 		49B732002796FE5F0074476E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B731FF2796FE5F0074476E /* AppDelegate.swift */; };
 		49B732022796FE5F0074476E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B732012796FE5F0074476E /* SceneDelegate.swift */; };
 		49B732042796FE5F0074476E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B732032796FE5F0074476E /* ViewController.swift */; };
 		49B732072796FE5F0074476E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49B732052796FE5F0074476E /* Main.storyboard */; };
 		49B732092796FE620074476E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49B732082796FE620074476E /* Assets.xcassets */; };
 		49B7320C2796FE620074476E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49B7320A2796FE620074476E /* LaunchScreen.storyboard */; };
+		49B732142796FEEA0074476E /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 49B732132796FEEA0074476E /* Podfile */; };
+		49B732182797F7320074476E /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B732172797F7320074476E /* CollectionViewController.swift */; };
+		49B7321C2797F8860074476E /* HostState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B7321B2797F8860074476E /* HostState.swift */; };
+		49B732202798324F0074476E /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B7321F2798324F0074476E /* CollectionViewCell.swift */; };
+		AC0487FC34D167E01B6C1086 /* Pods_slnovaios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E6967AA723E464059362592 /* Pods_slnovaios.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0E6967AA723E464059362592 /* Pods_slnovaios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_slnovaios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4926B713279C338B00A5D5DF /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		49B731FC2796FE5F0074476E /* slnovaios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = slnovaios.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49B731FF2796FE5F0074476E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		49B732012796FE5F0074476E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -24,6 +32,12 @@
 		49B732082796FE620074476E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49B7320B2796FE620074476E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		49B7320D2796FE620074476E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		49B732132796FEEA0074476E /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		49B732172797F7320074476E /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
+		49B7321B2797F8860074476E /* HostState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostState.swift; sourceTree = "<group>"; };
+		49B7321F2798324F0074476E /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		C0A914C0AA97466F87D3A2AD /* Pods-slnovaios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-slnovaios.release.xcconfig"; path = "Target Support Files/Pods-slnovaios/Pods-slnovaios.release.xcconfig"; sourceTree = "<group>"; };
+		D14BC14613560EB3937E1063 /* Pods-slnovaios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-slnovaios.debug.xcconfig"; path = "Target Support Files/Pods-slnovaios/Pods-slnovaios.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC0487FC34D167E01B6C1086 /* Pods_slnovaios.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,8 +55,11 @@
 		49B731F32796FE5F0074476E = {
 			isa = PBXGroup;
 			children = (
+				49B732132796FEEA0074476E /* Podfile */,
 				49B731FE2796FE5F0074476E /* slnovaios */,
 				49B731FD2796FE5F0074476E /* Products */,
+				C26FE83839C1CA5727DD86A8 /* Pods */,
+				F97F8B59DD530D6FD1EBC8EA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -63,8 +81,29 @@
 				49B732082796FE620074476E /* Assets.xcassets */,
 				49B7320A2796FE620074476E /* LaunchScreen.storyboard */,
 				49B7320D2796FE620074476E /* Info.plist */,
+				49B732172797F7320074476E /* CollectionViewController.swift */,
+				49B7321B2797F8860074476E /* HostState.swift */,
+				49B7321F2798324F0074476E /* CollectionViewCell.swift */,
+				4926B713279C338B00A5D5DF /* Helper.swift */,
 			);
 			path = slnovaios;
+			sourceTree = "<group>";
+		};
+		C26FE83839C1CA5727DD86A8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D14BC14613560EB3937E1063 /* Pods-slnovaios.debug.xcconfig */,
+				C0A914C0AA97466F87D3A2AD /* Pods-slnovaios.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		F97F8B59DD530D6FD1EBC8EA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0E6967AA723E464059362592 /* Pods_slnovaios.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,9 +113,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 49B732102796FE620074476E /* Build configuration list for PBXNativeTarget "slnovaios" */;
 			buildPhases = (
+				3EB9BA878000B432EA7B1079 /* [CP] Check Pods Manifest.lock */,
 				49B731F82796FE5F0074476E /* Sources */,
 				49B731F92796FE5F0074476E /* Frameworks */,
 				49B731FA2796FE5F0074476E /* Resources */,
+				A55716A31D03939F551400D8 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -127,18 +168,65 @@
 			files = (
 				49B7320C2796FE620074476E /* LaunchScreen.storyboard in Resources */,
 				49B732092796FE620074476E /* Assets.xcassets in Resources */,
+				49B732142796FEEA0074476E /* Podfile in Resources */,
 				49B732072796FE5F0074476E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		3EB9BA878000B432EA7B1079 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-slnovaios-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A55716A31D03939F551400D8 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-slnovaios/Pods-slnovaios-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-slnovaios/Pods-slnovaios-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-slnovaios/Pods-slnovaios-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		49B731F82796FE5F0074476E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49B732182797F7320074476E /* CollectionViewController.swift in Sources */,
+				4926B714279C338B00A5D5DF /* Helper.swift in Sources */,
 				49B732042796FE5F0074476E /* ViewController.swift in Sources */,
+				49B7321C2797F8860074476E /* HostState.swift in Sources */,
+				49B732202798324F0074476E /* CollectionViewCell.swift in Sources */,
 				49B732002796FE5F0074476E /* AppDelegate.swift in Sources */,
 				49B732022796FE5F0074476E /* SceneDelegate.swift in Sources */,
 			);
@@ -284,6 +372,7 @@
 		};
 		49B732112796FE620074476E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D14BC14613560EB3937E1063 /* Pods-slnovaios.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -312,6 +401,7 @@
 		};
 		49B732122796FE620074476E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0A914C0AA97466F87D3A2AD /* Pods-slnovaios.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
