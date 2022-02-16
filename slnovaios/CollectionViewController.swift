@@ -91,10 +91,11 @@ class CollectionViewController: UICollectionViewController {
         cell.contentView.layer.masksToBounds = true
         
         // 检查如果是时间格式
+        // 因为数据库存进去，读取出来，都需要时间，所以显示的时间都会比实际时间晚的。
         if (hostStates[indexPath.item].time.count == 19) {
             let localTime = Helper.getAllSeconds(time: Helper.getCurrentTime())
             let mysqlTime = Helper.getAllSeconds(time: hostStates[indexPath.item].time)
-            if (mysqlTime - 3 < localTime && localTime < mysqlTime + 3) {
+            if (mysqlTime - 3 < localTime && localTime <= mysqlTime + 4) {
                 cell.contentView.backgroundColor = .systemBlue
             } else {
                 cell.contentView.backgroundColor = .systemBackground
@@ -252,7 +253,7 @@ extension CollectionViewController {
     // 注意：MySQL数据库拿下来的TEXT数据显示出来是带有ASCII字符串十六进制表示的ANY对象，需要先转成Data然后转成String
     func getHostStates(infos: [[String: Any]]) {
         for info in infos {
-            let hostate = HostState(isRunning: (info["isrunning"] as! Int) != 0, uuid: String(data: info["uuid"] as! Data, encoding: String.Encoding.utf8) ?? "nulluuid", cpuFreq: (info["cpufreq"] as! Int), freeMemoryMB: (info["free_memory_mb"] as! Int), totalUsableDiskGB: (info["total_usable_disk_gb"] as! Int), cpuPercent: (info["cpu_percent"] as! Double), diskAllocationRatio: (info["disk_allocation_ratio"] as! Double), name: String(data: info["name"] as! Data, encoding: String.Encoding.utf8) ?? "nullname", ip: String(data: info["ip"] as! Data, encoding: String.Encoding.utf8) ?? "0.0.0.0", freeDiskGB: (info["free_disk_gb"] as! Double), time: String(data: info["time"] as! Data, encoding: String.Encoding.utf8) ?? "1970-00-00s 00:00:00")
+            let hostate = HostState(isRunning: (info["isrunning"] as! Int) != 0, uuid: String(data: info["uuid"] as! Data, encoding: String.Encoding.utf8) ?? "nulluuid", cpuFreq: (info["cpufreq"] as! Int), freeMemoryMB: (info["free_memory_mb"] as! Int), totalUsableDiskGB: (info["total_usable_disk_gb"] as! Int), cpuPercent: (info["cpu_percent"] as! Double), diskAllocationRatio: (info["disk_allocation_ratio"] as! Double), name: String(data: info["name"] as! Data, encoding: String.Encoding.utf8) ?? "nullname", ip: String(data: info["ip"] as! Data, encoding: String.Encoding.utf8) ?? "0.0.0.0", freeDiskGB: (info["free_disk_gb"] as! Double), time: String(data: info["time"] as! Data, encoding: String.Encoding.utf8) ?? "1970-00-00s 00:00:00", highVul: (info["high_vul"] as! Int), mediumVul: (info["medium_vul"] as! Int), lowVul: (info["low_vul"] as! Int), infoVul: (info["info_vul"] as! Int))
             
             
             hostStates.append(hostate)

@@ -10,7 +10,6 @@
 		4926B714279C338B00A5D5DF /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4926B713279C338B00A5D5DF /* Helper.swift */; };
 		49B732002796FE5F0074476E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B731FF2796FE5F0074476E /* AppDelegate.swift */; };
 		49B732022796FE5F0074476E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B732012796FE5F0074476E /* SceneDelegate.swift */; };
-		49B732042796FE5F0074476E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B732032796FE5F0074476E /* ViewController.swift */; };
 		49B732072796FE5F0074476E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49B732052796FE5F0074476E /* Main.storyboard */; };
 		49B732092796FE620074476E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49B732082796FE620074476E /* Assets.xcassets */; };
 		49B7320C2796FE620074476E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49B7320A2796FE620074476E /* LaunchScreen.storyboard */; };
@@ -24,10 +23,10 @@
 /* Begin PBXFileReference section */
 		0E6967AA723E464059362592 /* Pods_slnovaios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_slnovaios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4926B713279C338B00A5D5DF /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
+		49365882279DAEAC00388F41 /* slnovaios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = slnovaios.entitlements; sourceTree = "<group>"; };
 		49B731FC2796FE5F0074476E /* slnovaios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = slnovaios.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49B731FF2796FE5F0074476E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		49B732012796FE5F0074476E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		49B732032796FE5F0074476E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		49B732062796FE5F0074476E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		49B732082796FE620074476E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49B7320B2796FE620074476E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -74,9 +73,9 @@
 		49B731FE2796FE5F0074476E /* slnovaios */ = {
 			isa = PBXGroup;
 			children = (
+				49365882279DAEAC00388F41 /* slnovaios.entitlements */,
 				49B731FF2796FE5F0074476E /* AppDelegate.swift */,
 				49B732012796FE5F0074476E /* SceneDelegate.swift */,
-				49B732032796FE5F0074476E /* ViewController.swift */,
 				49B732052796FE5F0074476E /* Main.storyboard */,
 				49B732082796FE620074476E /* Assets.xcassets */,
 				49B7320A2796FE620074476E /* LaunchScreen.storyboard */,
@@ -224,7 +223,6 @@
 			files = (
 				49B732182797F7320074476E /* CollectionViewController.swift in Sources */,
 				4926B714279C338B00A5D5DF /* Helper.swift in Sources */,
-				49B732042796FE5F0074476E /* ViewController.swift in Sources */,
 				49B7321C2797F8860074476E /* HostState.swift in Sources */,
 				49B732202798324F0074476E /* CollectionViewCell.swift in Sources */,
 				49B732002796FE5F0074476E /* AppDelegate.swift in Sources */,
@@ -376,6 +374,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = slnovaios/slnovaios.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QXK2SWBXZ7;
@@ -393,9 +392,11 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jcwang.slnovaios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Debug;
 		};
@@ -405,6 +406,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = slnovaios/slnovaios.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QXK2SWBXZ7;
@@ -422,9 +424,11 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jcwang.slnovaios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Release;
 		};
