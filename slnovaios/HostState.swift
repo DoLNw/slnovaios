@@ -37,7 +37,8 @@ class HostState {
     var modelSizeMB = 0.0
     var loss = 0.0
     var accuracy = 0.0
-    var epoch = -1
+    // 显示的时候从0开始，存储的时候，也是从0开始存储的，因为训练的时候26，101这样，为了每5次存储时首位都存储
+    var epoch = (-1)
     var isAggregating = false
     var isTraining = false
     

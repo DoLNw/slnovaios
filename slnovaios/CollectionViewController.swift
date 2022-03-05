@@ -67,45 +67,52 @@ class CollectionViewController: UICollectionViewController {
     }
     
     @objc func startTrain() {
-        print("aaa")
-        let delegate = RMQConnectionDelegateLogger() // implement RMQConnectionDelegate yourself to react to errors
-        // "amqp://username:password@hostName:port/virtualHost"
-        // https://juejin.cn/post/6948322270989254664
-        print("bbb")
-        let conn = RMQConnection(uri: getRabbitMQUrl(), delegate: delegate)
-        
-        print("ccc")
-        conn.start()
-        print("ddd")
-        let ch = conn.createChannel()
-        print("eee")
-        
-        
-//        let q = ch.queue("ml_queue")
-//        let exchange = ch.direct("ml_exchange") // 这个返回exchange
-//        q.bind(exchange, routingKey: "ml_routing_key")
-//
-////        q.subscribe({ m in
-////           print("Received: \(String(data: m.body, encoding: String.Encoding.utf8))")
-////        })
-//        q.publish("start train".data(using: String.Encoding.utf8)!)
-        
-        print("fff")
-        let x = ch.fanout("ml_fanout_exchange") // “无路由交换机”，使用这个交换机不需要routingkey绑定，fanout交换机直接绑定了队列
-        print("ggg")
-        x.publish("start train".data(using: String.Encoding.utf8)!)
-        
+        let ac = UIAlertController(title: "Start train?", message: "It will make all hosts start to train", preferredStyle: .alert)
+        let okBtn = UIAlertAction(title: "OK", style: .default) { [self] _ in
+            print("aaa")
+            let delegate = RMQConnectionDelegateLogger() // implement RMQConnectionDelegate yourself to react to errors
+            // "amqp://username:password@hostName:port/virtualHost"
+            // https://juejin.cn/post/6948322270989254664
+            print("bbb")
+            let conn = RMQConnection(uri: self.getRabbitMQUrl(), delegate: delegate)
+            
+            print("ccc")
+            conn.start()
+            print("ddd")
+            let ch = conn.createChannel()
+            print("eee")
+            
+            
+    //        let q = ch.queue("ml_queue")
+    //        let exchange = ch.direct("ml_exchange") // 这个返回exchange
+    //        q.bind(exchange, routingKey: "ml_routing_key")
+    //
+    ////        q.subscribe({ m in
+    ////           print("Received: \(String(data: m.body, encoding: String.Encoding.utf8))")
+    ////        })
+    //        q.publish("start train".data(using: String.Encoding.utf8)!)
+            
+            print("fff")
+            let x = ch.fanout("ml_fanout_exchange") // “无路由交换机”，使用这个交换机不需要routingkey绑定，fanout交换机直接绑定了队列
+            print("ggg")
+            x.publish("start train".data(using: String.Encoding.utf8)!)
+            
 
-//        let q = ch.queue("ml_quene", options: .durable)
-//        q.bind(x)
-//        print("Waiting for logs.")
-//        q.subscribe({(_ message: RMQMessage) -> Void in
-//            print("Received \(String(describing: String(data: message.body, encoding: .utf8)))")
-//        })
-        
-        print("hhh")
-        conn.close()
-        print("iii")
+    //        let q = ch.queue("ml_quene", options: .durable)
+    //        q.bind(x)
+    //        print("Waiting for logs.")
+    //        q.subscribe({(_ message: RMQMessage) -> Void in
+    //            print("Received \(String(describing: String(data: message.body, encoding: .utf8)))")
+    //        })
+            
+            print("hhh")
+            conn.close()
+            print("iii")
+        }
+        ac.addAction(okBtn)
+        let cancelBtn = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        ac.addAction(cancelBtn)
+        self.present(ac, animated: true, completion: nil)
     }
     
     @objc func scheGetHostStates() {
@@ -162,11 +169,19 @@ class CollectionViewController: UICollectionViewController {
         if (hostStates[indexPath.item].time.count == 19) {
             let localTime = Helper.getAllSeconds(time: Helper.getCurrentTime())
             let mysqlTime = Helper.getAllSeconds(time: hostStates[indexPath.item].time)
-            if (mysqlTime - 3 < localTime && localTime <= mysqlTime + 4) {
-                cell.contentView.backgroundColor = .systemBlue
+            
+            // 训练用红色，聚合用橙色，运行蓝色，不活跃状态背景色
+            if hostStates[indexPath.item].isTraining {
+                cell.contentView.backgroundColor = .red.withAlphaComponent(0.5)
             } else {
-                cell.contentView.backgroundColor = .systemBackground
+                if (mysqlTime - 3 < localTime && localTime <= mysqlTime + 4) {
+                    cell.contentView.backgroundColor = .systemBlue.withAlphaComponent(0.6)
+                } else {
+                    cell.contentView.backgroundColor = .systemBackground
+                }
             }
+            
+            
         } else {
             cell.contentView.backgroundColor = .systemBackground
         }
@@ -315,7 +330,6 @@ extension CollectionViewController {
         }
         
         return [[String: Any]]()
-        
     }
     // 注意：MySQL数据库拿下来的TEXT数据显示出来是带有ASCII字符串十六进制表示的ANY对象，需要先转成Data然后转成String
     // 注意，mysql中text类型的字符串数据，获取方法是String(data: info["uuid"] as! Data, encoding: String.Encoding.utf8) ?? "nulluuid"
