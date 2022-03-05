@@ -7,10 +7,19 @@
 
 import UIKit
 import OHMySQL
+import RMQClient
+
+/*
+ 模式一：fanout
+ 这种模式下，传递到 exchange 的消息将会转发到所有与其绑定的 queue 上。
+ 不需要指定 routing_key ，即使指定了也是无效。
+ 需要提前将 exchange 和 queue 绑定，一个 exchange 可以绑定多个 queue，一个queue可以绑定多个exchange。
+ 需要先启动 订阅者，此模式下的队列是 consumer 随机生成的，发布者 仅仅发布消息到 exchange，由 exchange 转发消息至 queue。
+ */
 
 private let reuseIdentifier = "HostState"
 
-let keys = ["isrunning", "uuid", "cpufreq", "free_memory_mb", "total_usable_disk_gb", "cpu_percent", "disk_allocation_ratio", "name", "ip","free_disk_gb" ]
+let keys = ["uuid", "cpufreq", "free_memory_mb", "total_usable_disk_gb", "cpu_percent", "disk_allocation_ratio", "name", "ip","free_disk_gb" ]
 
 var hostStates = [HostState]()
 
@@ -26,6 +35,9 @@ class CollectionViewController: UICollectionViewController {
         super.viewDidLoad()
         
         self.navigationItem.title = "HostStates"
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(startTrain))
+        
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -39,6 +51,61 @@ class CollectionViewController: UICollectionViewController {
         let _ = connectMySQL()
         scheGetHostStates() // 一开始先来一遍
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(scheGetHostStates), userInfo: nil, repeats: true)
+    }
+    
+    func getRabbitMQUrl() -> String{
+        var components = URLComponents()
+        components.scheme = "amqp"
+        components.host = "116.62.233.27"
+        components.user = "rabbit"
+        components.password = "password"
+        components.port = 5672
+        components.path = "/vhost"
+        let url = components.url?.absoluteString ?? "-"
+        print("RabbitMQ URL \(url)")
+        return url
+    }
+    
+    @objc func startTrain() {
+        print("aaa")
+        let delegate = RMQConnectionDelegateLogger() // implement RMQConnectionDelegate yourself to react to errors
+        // "amqp://username:password@hostName:port/virtualHost"
+        // https://juejin.cn/post/6948322270989254664
+        print("bbb")
+        let conn = RMQConnection(uri: getRabbitMQUrl(), delegate: delegate)
+        
+        print("ccc")
+        conn.start()
+        print("ddd")
+        let ch = conn.createChannel()
+        print("eee")
+        
+        
+//        let q = ch.queue("ml_queue")
+//        let exchange = ch.direct("ml_exchange") // 这个返回exchange
+//        q.bind(exchange, routingKey: "ml_routing_key")
+//
+////        q.subscribe({ m in
+////           print("Received: \(String(data: m.body, encoding: String.Encoding.utf8))")
+////        })
+//        q.publish("start train".data(using: String.Encoding.utf8)!)
+        
+        print("fff")
+        let x = ch.fanout("ml_fanout_exchange") // “无路由交换机”，使用这个交换机不需要routingkey绑定，fanout交换机直接绑定了队列
+        print("ggg")
+        x.publish("start train".data(using: String.Encoding.utf8)!)
+        
+
+//        let q = ch.queue("ml_quene", options: .durable)
+//        q.bind(x)
+//        print("Waiting for logs.")
+//        q.subscribe({(_ message: RMQMessage) -> Void in
+//            print("Received \(String(describing: String(data: message.body, encoding: .utf8)))")
+//        })
+        
+        print("hhh")
+        conn.close()
+        print("iii")
     }
     
     @objc func scheGetHostStates() {
@@ -82,7 +149,7 @@ class CollectionViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! CollectionViewCell
-    
+        
         // Configure the cell
         // 为啥我把这个UI配置放在cell的init函数中没有用呢？
         cell.contentView.layer.cornerRadius = 12
@@ -251,10 +318,36 @@ extension CollectionViewController {
         
     }
     // 注意：MySQL数据库拿下来的TEXT数据显示出来是带有ASCII字符串十六进制表示的ANY对象，需要先转成Data然后转成String
+    // 注意，mysql中text类型的字符串数据，获取方法是String(data: info["uuid"] as! Data, encoding: String.Encoding.utf8) ?? "nulluuid"
+    // 而如果使用VARCHAR的话，只要转换成String就好了
     func getHostStates(infos: [[String: Any]]) {
         for info in infos {
-            let hostate = HostState(isRunning: (info["isrunning"] as! Int) != 0, uuid: String(data: info["uuid"] as! Data, encoding: String.Encoding.utf8) ?? "nulluuid", cpuFreq: (info["cpufreq"] as! Int), freeMemoryMB: (info["free_memory_mb"] as! Int), totalUsableDiskGB: (info["total_usable_disk_gb"] as! Int), cpuPercent: (info["cpu_percent"] as! Double), diskAllocationRatio: (info["disk_allocation_ratio"] as! Double), name: String(data: info["name"] as! Data, encoding: String.Encoding.utf8) ?? "nullname", ip: String(data: info["ip"] as! Data, encoding: String.Encoding.utf8) ?? "0.0.0.0", freeDiskGB: (info["free_disk_gb"] as! Double), time: String(data: info["time"] as! Data, encoding: String.Encoding.utf8) ?? "1970-00-00s 00:00:00", highVul: (info["high_vul"] as! Int), mediumVul: (info["medium_vul"] as! Int), lowVul: (info["low_vul"] as! Int), infoVul: (info["info_vul"] as! Int))
-            
+            let hostate = HostState(
+                uuid: info["uuid"] as! String,
+                diskAllocationRatio: (info["disk_allocation_ratio"] as! Double),
+                name: info["name"] as! String,
+                ip: info["ip"] as! String,
+                totalDiskGB: (info["total_disk_gb"] as! Double),
+                totalMemoryGB: (info["total_memory_gb"] as! Double),
+                gpuTotalMemoryGB: (info["gpu_total_memory_gb"] as! Double),
+                cpu_max_freq: (info["cpu_max_freq"] as! Double),
+                time: info["time"] as! String,
+                cpuPercent: (info["cpu_percent"] as! Double),
+                usedDiskGB: (info["used_disk_gb"] as! Double),
+                usedMemoryGB: (info["used_memory_gb"] as! Double),
+                gpuUsedMemoryGB: (info["gpu_used_memory_gb"] as! Double),
+                cpuCurrentFreq: (info["cpu_current_freq"] as! Double),
+                highVul: (info["high_vul"] as! Int),
+                mediumVul: (info["medium_vul"] as! Int),
+                lowVul: (info["low_vul"] as! Int),
+                infoVul: (info["info_vul"] as! Int),
+                modelSizeMB: (info["model_size_mb"] as! Double),
+                loss: (info["loss"] as! Double),
+                accuracy: (info["accuracy"] as! Double),
+                epoch: (info["epoch"] as! Int),
+                isAggregating: (info["is_aggregating"] as! Bool),
+                isTraining: (info["is_training"] as! Bool)
+            )
             
             hostStates.append(hostate)
         }
