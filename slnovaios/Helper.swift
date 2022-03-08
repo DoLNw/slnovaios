@@ -7,6 +7,19 @@
 
 import Foundation
 
+extension String {
+    // MARK: 字符串转字典
+    func stringValueDic() -> [String : Any]? {
+        let data = self.data(using: String.Encoding.utf8)
+        if let dict = try? JSONSerialization.jsonObject(with: data!,
+                        options: .mutableContainers) as? [String : Any] {
+            return dict
+        }
+
+        return nil
+    }
+}
+
 class Helper {
     static func getCurrentTime() -> String {
         let dateformatter = DateFormatter()

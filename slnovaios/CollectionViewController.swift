@@ -22,6 +22,8 @@ private let reuseIdentifier = "HostState"
 let keys = ["uuid", "cpufreq", "free_memory_mb", "total_usable_disk_gb", "cpu_percent", "disk_allocation_ratio", "name", "ip","free_disk_gb" ]
 
 var hostStates = [HostState]()
+var trainingHost = [String]()
+var epochIndex = [Int: Int]()   // 指示每一个epoch，有多少个主机已经训练好了
 
 class CollectionViewController: UICollectionViewController {
     // 初始化OHMySQL协调器
@@ -30,6 +32,8 @@ class CollectionViewController: UICollectionViewController {
     let context = MySQLQueryContext()
     
     var timer: Timer!
+    
+    var conn: RMQConnection!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,6 +55,54 @@ class CollectionViewController: UICollectionViewController {
         let _ = connectMySQL()
         scheGetHostStates() // 一开始先来一遍
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(scheGetHostStates), userInfo: nil, repeats: true)
+        
+        
+        let delegate = RMQConnectionDelegateLogger() // implement RMQConnectionDelegate yourself to react to errors
+        conn = RMQConnection(uri: self.getRabbitMQUrl(), delegate: delegate)
+        
+        conn.start()
+        let ch = conn.createChannel()
+
+        let x = ch.fanout("ml_fanout_exchange") // “无路由交换机”，使用这个交换机不需要routingkey绑定，fanout交换机直接绑定了队列
+
+        let q = ch.queue("", options: .durable)
+        q.bind(x)
+
+        q.subscribe({[self] (_ message: RMQMessage) -> Void in
+            let str = String(data: message.body, encoding: .utf8) ?? "no data"
+            if let message = str.stringValueDic() {
+                print(message)
+                
+                let epoch = message["epoch"] as! Int
+                let uuid = message["uuid"] as! String
+                let isStart = message["start"] as! Int == 1 ? true : false
+                let finished = message["finished"] as! Int == 1 ? true : false
+                
+                // 发送消息的时候保证都正确，下面的if就只会执行一个
+                if (isStart && !trainingHost.contains(uuid)) {
+                    trainingHost.append(uuid)
+                }
+                if (finished) {
+                    trainingHost.removeAll(keepingCapacity: true)
+                }
+                if (epoch != -1) {
+                    if let _ = epochIndex[epoch] {
+                        epochIndex[epoch]! += 1;
+                    } else {
+                        epochIndex[epoch] = 1;
+                    }
+                    if (epochIndex[epoch] == trainingHost.count) {
+                        self.sendFanoutMessage(message: "next epoch")
+                        epochIndex[epoch] = 0
+                    }
+                }
+                
+            }
+        })
+        
+        print("hhh")
+//        conn.close()
+        print("iii")
     }
     
     func getRabbitMQUrl() -> String{
@@ -66,54 +118,60 @@ class CollectionViewController: UICollectionViewController {
         return url
     }
     
+    func sendFanoutMessage(message: String) {
+        print("aaa")
+        let delegate = RMQConnectionDelegateLogger() // implement RMQConnectionDelegate yourself to react to errors
+        // "amqp://username:password@hostName:port/virtualHost"
+        // https://juejin.cn/post/6948322270989254664
+        print("bbb")
+        let conn = RMQConnection(uri: self.getRabbitMQUrl(), delegate: delegate)
+        
+        print("ccc")
+        conn.start()
+        print("ddd")
+        let ch = conn.createChannel()
+        print("eee")
+        
+        
+//        let q = ch.queue("ml_queue")
+//        let exchange = ch.direct("ml_exchange") // 这个返回exchange
+//        q.bind(exchange, routingKey: "ml_routing_key")
+//
+////        q.subscribe({ m in
+////           print("Received: \(String(data: m.body, encoding: String.Encoding.utf8))")
+////        })
+//        q.publish("start train".data(using: String.Encoding.utf8)!)
+        
+        print("fff")
+        let x = ch.fanout("ml_fanout_exchange") // “无路由交换机”，使用这个交换机不需要routingkey绑定，fanout交换机直接绑定了队列
+        print("ggg")
+        x.publish(message.data(using: String.Encoding.utf8)!)
+        
+
+//        let q = ch.queue("ml_quene", options: .durable)
+//        q.bind(x)
+//        print("Waiting for logs.")
+//        q.subscribe({(_ message: RMQMessage) -> Void in
+//            print("Received \(String(describing: String(data: message.body, encoding: .utf8)))")
+//        })
+        
+        print("hhh")
+        conn.close()
+        print("iii")
+    }
+    
     @objc func startTrain() {
         let ac = UIAlertController(title: "Start train?", message: "It will make all hosts start to train", preferredStyle: .alert)
         let okBtn = UIAlertAction(title: "OK", style: .default) { [self] _ in
-            print("aaa")
-            let delegate = RMQConnectionDelegateLogger() // implement RMQConnectionDelegate yourself to react to errors
-            // "amqp://username:password@hostName:port/virtualHost"
-            // https://juejin.cn/post/6948322270989254664
-            print("bbb")
-            let conn = RMQConnection(uri: self.getRabbitMQUrl(), delegate: delegate)
-            
-            print("ccc")
-            conn.start()
-            print("ddd")
-            let ch = conn.createChannel()
-            print("eee")
-            
-            
-    //        let q = ch.queue("ml_queue")
-    //        let exchange = ch.direct("ml_exchange") // 这个返回exchange
-    //        q.bind(exchange, routingKey: "ml_routing_key")
-    //
-    ////        q.subscribe({ m in
-    ////           print("Received: \(String(data: m.body, encoding: String.Encoding.utf8))")
-    ////        })
-    //        q.publish("start train".data(using: String.Encoding.utf8)!)
-            
-            print("fff")
-            let x = ch.fanout("ml_fanout_exchange") // “无路由交换机”，使用这个交换机不需要routingkey绑定，fanout交换机直接绑定了队列
-            print("ggg")
-            x.publish("start train".data(using: String.Encoding.utf8)!)
-            
-
-    //        let q = ch.queue("ml_quene", options: .durable)
-    //        q.bind(x)
-    //        print("Waiting for logs.")
-    //        q.subscribe({(_ message: RMQMessage) -> Void in
-    //            print("Received \(String(describing: String(data: message.body, encoding: .utf8)))")
-    //        })
-            
-            print("hhh")
-            conn.close()
-            print("iii")
+            sendFanoutMessage(message: "start train")
         }
         ac.addAction(okBtn)
         let cancelBtn = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         ac.addAction(cancelBtn)
         self.present(ac, animated: true, completion: nil)
     }
+    
+    
     
     @objc func scheGetHostStates() {
         hostStates.removeAll(keepingCapacity: true)
@@ -171,14 +229,15 @@ class CollectionViewController: UICollectionViewController {
             let mysqlTime = Helper.getAllSeconds(time: hostStates[indexPath.item].time)
             
             // 训练用红色，聚合用橙色，运行蓝色，不活跃状态背景色
-            if hostStates[indexPath.item].isTraining {
-                cell.contentView.backgroundColor = .red.withAlphaComponent(0.5)
-            } else {
-                if (mysqlTime - 3 < localTime && localTime <= mysqlTime + 4) {
-                    cell.contentView.backgroundColor = .systemBlue.withAlphaComponent(0.6)
-                } else {
-                    cell.contentView.backgroundColor = .systemBackground
+            if (mysqlTime - 3 < localTime && localTime <= mysqlTime + 4) {
+                cell.contentView.backgroundColor = .systemBlue.withAlphaComponent(0.6)
+                
+                if hostStates[indexPath.item].isTraining {
+                    cell.contentView.backgroundColor = .red.withAlphaComponent(0.5)
                 }
+                
+            } else {
+                cell.contentView.backgroundColor = .systemBackground
             }
             
             
