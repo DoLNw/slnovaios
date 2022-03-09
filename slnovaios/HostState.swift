@@ -107,7 +107,7 @@ class HostState {
                   \(self.time)
                   
                   cpu使用率：     \(String(format:"%.2f", self.cpuPercent))%
-                  cpu频率： \(String(format:"%.2f", self.cpuCurrentFreq))GHz(\(String(format:"%.2f", self.cpu_max_freq))GHz)
+                  cpu频率： \(String(format:"%.4f", self.cpuCurrentFreq))GHz(\(String(format:"%.2f", self.cpu_max_freq))GHz)
                   磁盘：    \(String(format:"%.2f", self.usedDiskGB))GB(\(String(format:"%.2f", self.totalDiskGB))GB)
                   内存：    \(String(format:"%.2f", self.usedMemoryGB))GB(\(String(format:"%.2f", self.totalMemoryGB))GB)
                   显存：    \(String(format:"%.2f", self.gpuUsedMemoryGB))GB(\(String(format:"%.2f", self.gpuTotalMemoryGB))GB)

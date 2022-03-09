@@ -24,6 +24,7 @@ let keys = ["uuid", "cpufreq", "free_memory_mb", "total_usable_disk_gb", "cpu_pe
 var hostStates = [HostState]()
 var trainingHost = [String]()
 var epochIndex = [Int: Int]()   // 指示每一个epoch，有多少个主机已经训练好了
+var schedulerIndex = 0
 
 class CollectionViewController: UICollectionViewController {
     // 初始化OHMySQL协调器
@@ -77,6 +78,7 @@ class CollectionViewController: UICollectionViewController {
                 let uuid = message["uuid"] as! String
                 let isStart = message["start"] as! Int == 1 ? true : false
                 let finished = message["finished"] as! Int == 1 ? true : false
+                let scheduler = message["scheduler"] as! Int == 1 ? true : false
                 
                 // 发送消息的时候保证都正确，下面的if就只会执行一个
                 if (isStart && !trainingHost.contains(uuid)) {
@@ -84,6 +86,14 @@ class CollectionViewController: UICollectionViewController {
                 }
                 if (finished) {
                     trainingHost.removeAll(keepingCapacity: true)
+                    schedulerIndex = 0
+                }
+                if (scheduler) {
+                    schedulerIndex += 1
+                    if (schedulerIndex == trainingHost.count) {
+                        self.sendFanoutMessage(message: "start scheduler")
+                        schedulerIndex = 0
+                    }
                 }
                 if (epoch != -1) {
                     if let _ = epochIndex[epoch] {
@@ -234,6 +244,10 @@ class CollectionViewController: UICollectionViewController {
                 
                 if hostStates[indexPath.item].isTraining {
                     cell.contentView.backgroundColor = .red.withAlphaComponent(0.5)
+                }
+                // 聚合为true的时候，training肯定是true的
+                if hostStates[indexPath.item].isAggregating {
+                    cell.contentView.backgroundColor = .orange.withAlphaComponent(0.5)
                 }
                 
             } else {
